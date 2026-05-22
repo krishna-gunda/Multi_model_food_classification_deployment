@@ -247,8 +247,8 @@ Deployed on **[Render](https://render.com)** as a web service.
 
 **G. Krishna** — Data Scientist
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-gundakri-0A66C2?style=flat&logo=linkedin)](https://linkedin.com/in/gundakri)
-[![GitHub](https://img.shields.io/badge/GitHub-gundakrishna3-181717?style=flat&logo=github)](https://github.com/gundakrishna3)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-gundakri-0A66C2?style=flat&logo=linkedin)](https://www.linkedin.com/in/g-krishna630534/))
+[![GitHub](https://img.shields.io/badge/GitHub-gundakrishna3-181717?style=flat&logo=github)](https://github.com/krishna-gunda))
 [![Email](https://img.shields.io/badge/Email-gundakrishna338%40gmail.com-EA4335?style=flat&logo=gmail)](mailto:gundakrishna338@gmail.com)
 
 ---
