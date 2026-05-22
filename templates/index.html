@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Vihara Tech — SkillUnion · Food Classifier</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+/* ─── CSS Variables ──────────────────────────────── */
+:root{
+  --bg:#0b0e14;
+  --surface:#121620;
+  --card:#181d28;
+  --border:#252c3a;
+  --accent:#f5c542;
+  --accent2:#4ef0b0;
+  --red:#ff5252;
+  --text:#e8eaf0;
+  --muted:#6b7591;
+  --font-display:'Syne',sans-serif;
+  --font-mono:'DM Mono',monospace;
+  --font-body:'DM Sans',sans-serif;
+  --radius:14px;
+  --transition:.22s cubic-bezier(.4,0,.2,1);
+}
+
+/* ─── Reset ──────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-body);
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* ─── Grain overlay ──────────────────────────────── */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:999;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='.04'/%3E%3C/svg%3E");
+  opacity:.55;
+}
+
+/* ─── Header ─────────────────────────────────────── */
+header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 36px;
+  border-bottom:1px solid var(--border);
+  background:var(--surface);
+  position:sticky;top:0;z-index:50;
+  backdrop-filter:blur(12px);
+}
+.brand{
+  font-family:var(--font-display);
+  font-size:1.35rem;font-weight:800;letter-spacing:.5px;
+  color:var(--text);
+}
+.brand span{color:var(--accent);}
+.brand sub{font-size:.65rem;color:var(--muted);font-family:var(--font-mono);letter-spacing:2px;display:block;margin-top:2px}
+.header-tag{
+  font-family:var(--font-mono);font-size:.72rem;color:var(--muted);
+  border:1px solid var(--border);padding:4px 12px;border-radius:999px;letter-spacing:1px;
+}
+
+/* ─── Main grid ──────────────────────────────────── */
+.main{
+  display:grid;
+  grid-template-columns:260px 1fr 240px;
+  gap:20px;
+  padding:24px 28px;
+  max-width:1400px;margin:0 auto;
+  min-height:calc(100vh - 68px);
+}
+
+/* ─── Left profile card ──────────────────────────── */
+.profile-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:28px 22px;
+  display:flex;flex-direction:column;align-items:center;
+  gap:14px;
+  height:fit-content;
+  position:sticky;top:90px;
+}
+.avatar{
+  width:88px;height:88px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent) 0%,var(--accent2) 100%);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-size:1.9rem;font-weight:800;
+  color:var(--bg);box-shadow:0 0 0 4px var(--bg),0 0 0 6px var(--accent);
+}
+.profile-name{
+  font-family:var(--font-display);font-size:1.05rem;font-weight:700;
+  color:var(--text);text-align:center;
+}
+.profile-role{
+  font-size:.78rem;color:var(--accent);font-family:var(--font-mono);letter-spacing:1px;
+  background:rgba(245,197,66,.08);padding:3px 10px;border-radius:999px;
+  border:1px solid rgba(245,197,66,.2);
+}
+.profile-links{display:flex;flex-direction:column;gap:8px;width:100%;}
+.plink{
+  display:flex;align-items:center;gap:8px;
+  font-size:.78rem;color:var(--muted);font-family:var(--font-mono);
+  text-decoration:none;padding:7px 10px;border-radius:8px;
+  border:1px solid var(--border);transition:var(--transition);
+  overflow:hidden;white-space:nowrap;text-overflow:ellipsis;
+}
+.plink:hover{border-color:var(--accent);color:var(--accent);background:rgba(245,197,66,.05);}
+.plink svg{flex-shrink:0;width:14px;height:14px;}
+.divider{width:100%;height:1px;background:var(--border);margin:4px 0;}
+
+/* ─── Centre panel ───────────────────────────────── */
+.center{display:flex;flex-direction:column;gap:18px;}
+
+/* title bar */
+.section-title{
+  font-family:var(--font-display);font-weight:700;font-size:1.5rem;
+  color:var(--text);letter-spacing:-.3px;
+}
+.section-title span{color:var(--accent);}
+
+/* sub-card */
+.card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:22px 24px;
+}
+
+/* upload zone */
+.upload-zone{
+  border:2px dashed var(--border);border-radius:10px;
+  padding:28px 20px;text-align:center;
+  cursor:pointer;transition:var(--transition);
+  position:relative;overflow:hidden;
+  background:rgba(255,255,255,.015);
+}
+.upload-zone:hover{border-color:var(--accent);background:rgba(245,197,66,.03);}
+.upload-zone.drag{border-color:var(--accent2);background:rgba(78,240,176,.04);}
+.upload-icon{font-size:2.4rem;margin-bottom:8px;display:block;}
+.upload-label{font-size:.9rem;color:var(--muted);}
+.upload-label strong{color:var(--accent);cursor:pointer;}
+#fileInput{display:none;}
+
+/* preview */
+.preview-wrap{
+  display:none;position:relative;border-radius:8px;overflow:hidden;
+  max-height:220px;
+}
+.preview-wrap img{width:100%;object-fit:cover;display:block;}
+.preview-badge{
+  position:absolute;top:8px;right:8px;
+  background:rgba(0,0,0,.7);color:var(--accent2);
+  font-family:var(--font-mono);font-size:.7rem;padding:4px 8px;border-radius:6px;
+  backdrop-filter:blur(4px);
+}
+
+/* model selector */
+.model-row{display:flex;gap:10px;flex-wrap:wrap;}
+.model-btn{
+  flex:1;min-width:100px;
+  border:1px solid var(--border);background:transparent;
+  color:var(--muted);font-family:var(--font-mono);font-size:.78rem;letter-spacing:.5px;
+  padding:10px 6px;border-radius:8px;cursor:pointer;transition:var(--transition);
+  text-transform:uppercase;
+}
+.model-btn:hover{border-color:var(--accent);color:var(--accent);}
+.model-btn.active{
+  border-color:var(--accent);color:var(--bg);
+  background:var(--accent);font-weight:600;
+}
+
+/* action buttons */
+.action-row{display:flex;gap:12px;}
+.btn{
+  flex:1;padding:13px 22px;border-radius:9px;
+  border:none;cursor:pointer;font-family:var(--font-display);
+  font-size:.92rem;font-weight:700;letter-spacing:.3px;
+  transition:var(--transition);position:relative;overflow:hidden;
+}
+.btn-predict{background:var(--accent);color:var(--bg);}
+.btn-predict:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.btn-metrics{background:transparent;border:1px solid var(--border);color:var(--muted);}
+.btn-metrics:hover{border-color:var(--accent2);color:var(--accent2);}
+.btn-metrics.active{border-color:var(--accent2);color:var(--accent2);background:rgba(78,240,176,.07);}
+
+/* loader */
+.loader{
+  display:none;text-align:center;padding:20px;
+  font-family:var(--font-mono);font-size:.82rem;color:var(--muted);letter-spacing:1px;
+}
+.spinner{
+  width:28px;height:28px;border:2px solid var(--border);
+  border-top-color:var(--accent);border-radius:50%;
+  animation:spin .8s linear infinite;margin:0 auto 10px;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* results */
+.result-box{
+  display:none;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;padding:20px 22px;
+  animation:fadeUp .35s ease;
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.result-class{
+  font-family:var(--font-display);font-size:1.6rem;font-weight:800;
+  color:var(--accent);text-transform:capitalize;letter-spacing:-.5px;
+}
+.result-conf{
+  font-family:var(--font-mono);font-size:.78rem;color:var(--muted);margin-top:2px;
+}
+.nutrition-grid{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:16px;
+}
+.nut-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:8px;padding:12px 8px;text-align:center;
+  transition:var(--transition);
+}
+.nut-card:hover{border-color:var(--accent);transform:translateY(-2px);}
+.nut-val{
+  font-family:var(--font-display);font-size:1.15rem;font-weight:700;
+  color:var(--text);
+}
+.nut-label{
+  font-family:var(--font-mono);font-size:.65rem;color:var(--muted);
+  text-transform:uppercase;letter-spacing:1px;margin-top:3px;
+}
+.per-label{
+  font-family:var(--font-mono);font-size:.68rem;color:var(--muted);
+  margin-top:12px;text-align:right;
+}
+
+/* metrics inside result */
+.metrics-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px;}
+.met-card{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:8px;padding:14px 10px;text-align:center;
+}
+.met-val{
+  font-family:var(--font-display);font-size:1.3rem;font-weight:700;
+  color:var(--accent2);
+}
+.met-label{
+  font-family:var(--font-mono);font-size:.65rem;color:var(--muted);
+  text-transform:uppercase;letter-spacing:1px;margin-top:3px;
+}
+
+/* ─── Right panel – classes / metrics ────────────── */
+.right-panel{
+  background:var(--card);border:1px solid var(--border);
+  border-radius:var(--radius);padding:18px 16px;
+  height:fit-content;position:sticky;top:90px;
+  max-height:calc(100vh - 110px);overflow-y:auto;
+}
+.right-panel::-webkit-scrollbar{width:4px;}
+.right-panel::-webkit-scrollbar-track{background:transparent;}
+.right-panel::-webkit-scrollbar-thumb{background:var(--border);border-radius:999px;}
+.right-title{
+  font-family:var(--font-display);font-size:.85rem;font-weight:700;
+  color:var(--muted);text-transform:uppercase;letter-spacing:2px;
+  margin-bottom:14px;
+}
+.class-list{display:flex;flex-direction:column;gap:5px;}
+.class-item{
+  display:flex;align-items:center;gap:8px;
+  font-size:.78rem;color:var(--muted);font-family:var(--font-mono);
+  padding:6px 8px;border-radius:6px;transition:var(--transition);
+  cursor:default;
+}
+.class-item.highlight{color:var(--accent);background:rgba(245,197,66,.07);}
+.class-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:var(--border);flex-shrink:0;
+}
+.class-item.highlight .class-dot{background:var(--accent);}
+
+/* metrics panel view */
+.metrics-panel{display:none;}
+.metrics-panel .mcard{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:8px;padding:12px;margin-bottom:8px;
+}
+.mcard-label{
+  font-family:var(--font-mono);font-size:.65rem;color:var(--muted);
+  text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;
+}
+.mcard-val{
+  font-family:var(--font-display);font-size:1.3rem;font-weight:700;
+  color:var(--accent2);
+}
+.bar-wrap{margin-top:6px;background:var(--border);border-radius:999px;height:4px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,var(--accent2),var(--accent));}
+.mcard-model{
+  font-family:var(--font-mono);font-size:.65rem;color:var(--muted);
+  border:1px solid var(--border);padding:3px 8px;border-radius:999px;
+  display:inline-block;margin-top:10px;letter-spacing:.5px;text-transform:uppercase;
+}
+
+/* ─── Error toast ────────────────────────────────── */
+.toast{
+  position:fixed;bottom:28px;right:28px;z-index:1000;
+  background:var(--red);color:#fff;
+  font-family:var(--font-mono);font-size:.8rem;
+  padding:12px 18px;border-radius:9px;
+  display:none;animation:fadeUp .3s ease;
+  max-width:320px;line-height:1.5;
+}
+
+/* ─── Responsive ─────────────────────────────────── */
+@media(max-width:980px){
+  .main{grid-template-columns:1fr;grid-template-rows:auto}
+  .profile-card,.right-panel{position:static;}
+  .right-panel{max-height:360px;}
+  .nutrition-grid{grid-template-columns:repeat(3,1fr);}
+}
+</style>
+</head>
+<body>
+
+<!-- ── Header ── -->
+<header>
+  <div class="brand">
+    Vihara<span>Tech</span> — SkillUnion
+    <sub>FOOD INTELLIGENCE PLATFORM</sub>
+  </div>
+  <span class="header-tag">CNN · ResNet · VGG16</span>
+</header>
+
+<!-- ── Main Grid ── -->
+<main class="main">
+
+  <!-- LEFT: Profile -->
+  <aside class="profile-card">
+    <div class="avatar">
+  <img
+    src="{{ url_for('static', filename='krishna.jpeg') }}"
+    alt="G Krishna"
+    style="
+      width: 180px;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 50%;
+    "
+  >
+</div>
+    <div class="profile-name">G. Krishna</div>
+    <div class="profile-role">Data Scientist</div>
+    <div class="divider"></div>
+    <div class="profile-links">
+      <a href="https://linkedin.com/in/gundakrishna338" class="plink" target="_blank">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6zM2 9h4v12H2z"/><circle cx="4" cy="4" r="2"/></svg>
+        linkedin.com/in/gundakrishna
+      </a>
+      <a href="https://github.com/gundakrishna338" class="plink" target="_blank">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>
+        github.com/gundakrishna338
+      </a>
+      <a href="mailto:gundakrishna338@gmail.com" class="plink">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+        gundakrishna338@gmail.com
+      </a>
+    </div>
+  </aside>
+
+  <!-- CENTER: Classifier -->
+  <section class="center">
+    <div class="section-title">Food Classification <span>·</span> Deep Learning CNN</div>
+
+    <!-- Upload -->
+    <div class="card">
+      <div class="upload-zone" id="dropZone">
+        <span class="upload-icon">🍱</span>
+        <p class="upload-label">
+          Drag &amp; drop a food image or <strong onclick="document.getElementById('fileInput').click()">browse</strong>
+        </p>
+        <p class="upload-label" style="font-size:.72rem;margin-top:6px;color:var(--muted);">Resized automatically to 255×255</p>
+        <input type="file" id="fileInput" accept="image/*"/>
+      </div>
+      <div class="preview-wrap" id="previewWrap">
+        <img id="previewImg" src="" alt="preview"/>
+        <span class="preview-badge">255×255</span>
+      </div>
+    </div>
+
+    <!-- Model select -->
+    <div class="card">
+      <div style="font-family:var(--font-mono);font-size:.72rem;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Select Model</div>
+      <div class="model-row">
+        <button class="model-btn active" data-model="custom_cnn">Custom CNN</button>
+        <button class="model-btn" data-model="vgg16">VGG16</button>
+        <button class="model-btn" data-model="resnet">ResNet50</button>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="action-row">
+      <button class="btn btn-predict" id="btnPredict">⚡ Predict</button>
+      <button class="btn btn-metrics" id="btnMetrics">📊 Metrics</button>
+    </div>
+
+    <!-- Loader -->
+    <div class="loader" id="loader">
+      <div class="spinner"></div>
+      Classifying image…
+    </div>
+
+    <!-- Result -->
+    <div class="result-box" id="resultBox">
+      <div id="resultContent"></div>
+    </div>
+  </section>
+
+  <!-- RIGHT: Classes / Metrics panel -->
+  <aside class="right-panel" id="rightPanel">
+    <!-- Classes view (default) -->
+    <div id="classesView">
+      <div class="right-title">34 Food Classes</div>
+      <div class="class-list" id="classList"></div>
+    </div>
+    <!-- Metrics view -->
+    <div id="metricsView" class="metrics-panel">
+      <div class="right-title">Model Metrics</div>
+      <div id="metricsContent">
+        <p style="font-family:var(--font-mono);font-size:.75rem;color:var(--muted);">Run a prediction first, then click Metrics to see per-class scores.</p>
+      </div>
+    </div>
+  </aside>
+
+</main>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+const CLASS_NAMES = [
+  "burger","butter_naan","chai","chapati","chole_bhature",
+  "dal_makhani","dhokla","fried_rice","idli","jalebi",
+  "kadai_paneer","kulfi","masala_dosa","momos","paani_puri",
+  "pakode","pav_bhaji","pizza","samosa","sushi",
+  "biryani","pasta","salad","sandwich","soup",
+  "steak","tacos","waffles","noodles","pancakes",
+  "cheesecake","ice_cream","poha","upma"
+];
+
+// State
+let selectedModel = "custom_cnn";
+let lastPredictedClass = null;
+let metricsMode = false;
+
+// ── Build class list ──────────────────────────────────
+const listEl = document.getElementById("classList");
+CLASS_NAMES.forEach(name=>{
+  const div = document.createElement("div");
+  div.className = "class-item";
+  div.dataset.name = name;
+  div.innerHTML = `<span class="class-dot"></span>${name.replace(/_/g," ")}`;
+  listEl.appendChild(div);
+});
+
+// ── Model buttons ─────────────────────────────────────
+document.querySelectorAll(".model-btn").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".model-btn").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    selectedModel = btn.dataset.model;
+  });
+});
+
+// ── Upload / drag ─────────────────────────────────────
+const dropZone = document.getElementById("dropZone");
+const fileInput = document.getElementById("fileInput");
+const previewWrap = document.getElementById("previewWrap");
+const previewImg = document.getElementById("previewImg");
+
+dropZone.addEventListener("dragover",e=>{e.preventDefault();dropZone.classList.add("drag");});
+dropZone.addEventListener("dragleave",()=>dropZone.classList.remove("drag"));
+dropZone.addEventListener("drop",e=>{
+  e.preventDefault();dropZone.classList.remove("drag");
+  handleFile(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener("change",()=>handleFile(fileInput.files[0]));
+dropZone.addEventListener("click",e=>{
+  if(e.target.tagName!=="STRONG") fileInput.click();
+});
+
+function handleFile(f){
+  if(!f||!f.type.startsWith("image/"))return;
+  const url = URL.createObjectURL(f);
+  previewImg.src = url;
+  previewWrap.style.display = "block";
+  dropZone.style.display = "none";
+  // reset results
+  document.getElementById("resultBox").style.display="none";
+  document.getElementById("loader").style.display="none";
+  highlightClass(null);
+}
+
+// ── Predict ───────────────────────────────────────────
+document.getElementById("btnPredict").addEventListener("click", async()=>{
+  if(!fileInput.files[0]) return showToast("Please upload an image first.");
+  setLoading(true);
+  resetMetricsMode();
+
+  const fd = new FormData();
+  fd.append("image", fileInput.files[0]);
+  fd.append("model", selectedModel);
+
+  try{
+    const res = await fetch("/predict",{method:"POST",body:fd});
+    const d = await res.json();
+    setLoading(false);
+    if(!res.ok) return showToast(d.error||"Prediction failed.");
+
+    lastPredictedClass = d.class;
+    highlightClass(d.class);
+
+    // Update preview with server-resized image
+    if(d.preview){
+      previewImg.src = "data:image/jpeg;base64,"+d.preview;
+    }
+
+    renderNutrition(d);
+  }catch(e){
+    setLoading(false);
+    showToast("Server error: "+e.message);
+  }
+});
+
+function renderNutrition(d){
+  const n = d.nutrition || {};
+  const html = `
+    <div class="result-class">${d.class.replace(/_/g," ")}</div>
+    <div class="result-conf">Confidence: <strong style="color:var(--accent)">${d.confidence}%</strong> &nbsp;·&nbsp; Model: <span style="color:var(--accent2)">${d.model.replace("_"," ").toUpperCase()}</span></div>
+    <div class="nutrition-grid">
+      ${nutCard("🔥","Calories",n.calories,"kcal")}
+      ${nutCard("🍞","Carbs",n.carbohydrates,"g")}
+      ${nutCard("🥑","Fats",n.fats,"g")}
+      ${nutCard("💪","Proteins",n.proteins,"g")}
+      ${nutCard("🌾","Fiber",n.fiber,"g")}
+    </div>
+    <div class="per-label">* per 100g serving</div>
+  `;
+  const box = document.getElementById("resultBox");
+  document.getElementById("resultContent").innerHTML = html;
+  box.style.display="block";
+}
+
+function nutCard(icon,label,val,unit){
+  return `<div class="nut-card">
+    <div style="font-size:1.4rem">${icon}</div>
+    <div class="nut-val">${val!==undefined&&val!=="N/A"?val:"—"}<small style="font-size:.55em;color:var(--muted)">${unit}</small></div>
+    <div class="nut-label">${label}</div>
+  </div>`;
+}
+
+// ── Metrics ───────────────────────────────────────────
+document.getElementById("btnMetrics").addEventListener("click", async()=>{
+  if(metricsMode){
+    resetMetricsMode();return;
+  }
+  if(!lastPredictedClass) return showToast("Run a prediction first to see metrics.");
+
+  document.getElementById("btnMetrics").classList.add("active");
+  metricsMode=true;
+  // switch right panel
+  document.getElementById("classesView").style.display="none";
+  document.getElementById("metricsView").style.display="block";
+
+  // fetch
+  try{
+    const res = await fetch("/metrics",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({model:selectedModel,class_name:lastPredictedClass})
+    });
+    const m = await res.json();
+    if(!res.ok) return renderMetricsError(m.error);
+    renderMetricsPanel(m);
+  }catch(e){
+    renderMetricsError(e.message);
+  }
+});
+
+function renderMetricsPanel(m){
+  const html = `
+    <div class="mcard">
+      <div class="mcard-label">Precision</div>
+      <div class="mcard-val">${(m.precision*100).toFixed(1)}%</div>
+      <div class="bar-wrap"><div class="bar-fill" style="width:${(m.precision*100).toFixed(1)}%"></div></div>
+    </div>
+    <div class="mcard">
+      <div class="mcard-label">Recall</div>
+      <div class="mcard-val">${(m.recall*100).toFixed(1)}%</div>
+      <div class="bar-wrap"><div class="bar-fill" style="width:${(m.recall*100).toFixed(1)}%"></div></div>
+    </div>
+    <div class="mcard">
+      <div class="mcard-label">F1 Score</div>
+      <div class="mcard-val">${(m.f1_score*100).toFixed(1)}%</div>
+      <div class="bar-wrap"><div class="bar-fill" style="width:${(m.f1_score*100).toFixed(1)}%"></div></div>
+    </div>
+    <div style="font-family:var(--font-mono);font-size:.7rem;color:var(--muted);margin-top:6px;">
+      Class: <span style="color:var(--text)">${lastPredictedClass.replace(/_/g," ")}</span>
+    </div>
+    <div class="mcard-model">${selectedModel.replace("_"," ")}</div>
+  `;
+  document.getElementById("metricsContent").innerHTML = html;
+}
+
+function renderMetricsError(msg){
+  document.getElementById("metricsContent").innerHTML = `<p style="font-family:var(--font-mono);font-size:.75rem;color:var(--red);">${msg}</p>`;
+}
+
+function resetMetricsMode(){
+  metricsMode=false;
+  document.getElementById("btnMetrics").classList.remove("active");
+  document.getElementById("classesView").style.display="block";
+  document.getElementById("metricsView").style.display="none";
+}
+
+// ── Helpers ───────────────────────────────────────────
+function highlightClass(name){
+  document.querySelectorAll(".class-item").forEach(el=>{
+    el.classList.toggle("highlight", el.dataset.name===name);
+  });
+  if(name){
+    const target = document.querySelector(`.class-item[data-name="${name}"]`);
+    if(target) target.scrollIntoView({block:"nearest",behavior:"smooth"});
+  }
+}
+
+function setLoading(on){
+  document.getElementById("loader").style.display = on?"block":"none";
+  document.getElementById("btnPredict").disabled = on;
+}
+
+function showToast(msg){
+  const t = document.getElementById("toast");
+  t.textContent=msg;t.style.display="block";
+  setTimeout(()=>t.style.display="none",3500);
+}
+</script>
+</body>
+</html>
