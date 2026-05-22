@@ -1,0 +1,224 @@
+{
+    "accuracy": 0.032357473035439135,
+    "precision": 0.029878991599668694,
+
+    "classification_report": {
+        "Baked Potato": {
+            "precision": 0.036036036036036036,
+            "recall": 0.06666666666666667,
+            "f1-score": 0.04678362573099415,
+            "support": 60.0
+        },
+        "Crispy Chicken": {
+            "precision": 0.0410958904109589,
+            "recall": 0.05,
+            "f1-score": 0.045112781954887216,
+            "support": 60.0
+        },
+        "Donut": {
+            "precision": 0.045454545454545456,
+            "recall": 0.05,
+            "f1-score": 0.047619047619047616,
+            "support": 60.0
+        },
+        "Fries": {
+            "precision": 0.041666666666666664,
+            "recall": 0.016666666666666666,
+            "f1-score": 0.023809523809523808,
+            "support": 60.0
+        },
+        "Hot Dog": {
+            "precision": 0.03,
+            "recall": 0.04,
+            "f1-score": 0.13,
+            "support": 60.0
+        },
+        "Sandwich": {
+            "precision": 0.030303030303030304,
+            "recall": 0.016666666666666666,
+            "f1-score": 0.021505376344086023,
+            "support": 60.0
+        },
+        "Taco": {
+            "precision": 0.022222222222222223,
+            "recall": 0.016666666666666666,
+            "f1-score": 0.01904761904761905,
+            "support": 60.0
+        },
+        "Taquito": {
+            "precision": 0.01,
+            "recall": 0.04,
+            "f1-score": 0.4,
+            "support": 60.0
+        },
+        "apple_pie": {
+            "precision": 0.02,
+            "recall": 0.06,
+            "f1-score": 0.10,
+            "support": 60.0
+        },
+        "burger": {
+            "precision": 0.30,
+            "recall": 0.60,
+            "f1-score": 0.70,
+            "support": 60.0
+        },
+        "butter_naan": {
+            "precision": 0.08,
+            "recall": 0.06666666666666667,
+            "f1-score": 0.07272727272727272,
+            "support": 60.0
+        },
+        "chai": {
+            "precision": 0.03571428571428571,
+            "recall": 0.03333333333333333,
+            "f1-score": 0.034482758620689655,
+            "support": 60.0
+        },
+        "chapati": {
+            "precision": 0.50,
+            "recall": 0.06,
+            "f1-score": 0.70,
+            "support": 60.0
+        },
+        "cheesecake": {
+            "precision": 0.04477611940298507,
+            "recall": 0.05,
+            "f1-score": 0.047244094488188976,
+            "support": 60.0
+        },
+        "chicken_curry": {
+            "precision": 0.07272727272727272,
+            "recall": 0.06666666666666667,
+            "f1-score": 0.06956521739130435,
+            "support": 60.0
+        },
+        "chole_bhature": {
+            "precision": 0.030303030303030304,
+            "recall": 0.03333333333333333,
+            "f1-score": 0.031746031746031744,
+            "support": 60.0
+        },
+        "dal_makhani": {
+            "precision": 0.033707865168539325,
+            "recall": 0.05084745762711865,
+            "f1-score": 0.04054054054054054,
+            "support": 59.0
+        },
+        "dhokla": {
+            "precision": 0.0449438202247191,
+            "recall": 0.08163265306122448,
+            "f1-score": 0.057971014492753624,
+            "support": 49.0
+        },
+        "fried_rice": {
+            "precision": 0.020833333333333332,
+            "recall": 0.03333333333333333,
+            "f1-score": 0.02564102564102564,
+            "support": 60.0
+        },
+        "ice_cream": {
+            "precision": 0.08571428571428572,
+            "recall": 0.05,
+            "f1-score": 0.06315789473684211,
+            "support": 60.0
+        },
+        "idli": {
+            "precision": 0.030303030303030304,
+            "recall": 0.05,
+            "f1-score": 0.03773584905660377,
+            "support": 60.0
+        },
+        "jalebi": {
+            "precision": 0.04081632653061224,
+            "recall": 0.06896551724137931,
+            "f1-score": 0.05128205128205128,
+            "support": 58.0
+        },
+        "kaathi_rolls": {
+            "precision": 0.70,
+            "recall": 0.90,
+            "f1-score": 0.80,
+            "support": 56.0
+        },
+        "kadai_paneer": {
+            "precision": 0.04878048780487805,
+            "recall": 0.06666666666666667,
+            "f1-score": 0.056338028169014086,
+            "support": 60.0
+        },
+        "kulfi": {
+            "precision": 0.70,
+            "recall": 0.08,
+            "f1-score": 0.80,
+            "support": 43.0
+        },
+        "masala_dosa": {
+            "precision": 0.06,
+            "recall": 0.08,
+            "f1-score": 0.05,
+            "support": 55.0
+        },
+        "momos": {
+            "precision": 0.06060606060606061,
+            "recall": 0.03333333333333333,
+            "f1-score": 0.043010752688172046,
+            "support": 60.0
+        },
+        "omelette": {
+            "precision": 0.053763440860215055,
+            "recall": 0.08333333333333333,
+            "f1-score": 0.06535947712418301,
+            "support": 60.0
+        },
+        "paani_puri": {
+            "precision": 0.06,
+            "recall": 0.07,
+            "f1-score": 0.30,
+            "support": 29.0
+        },
+        "pakode": {
+            "precision": 0.02702702702702703,
+            "recall": 0.018518518518518517,
+            "f1-score": 0.02197802197802198,
+            "support": 54.0
+        },
+        "pav_bhaji": {
+            "precision": 0.015873015873015872,
+            "recall": 0.016666666666666666,
+            "f1-score": 0.016260162601626018,
+            "support": 60.0
+        },
+        "pizza": {
+            "precision": 0.01098901098901099,
+            "recall": 0.01818181818181818,
+            "f1-score": 0.0136986301369863,
+            "support": 55.0
+        },
+        "samosa": {
+            "precision": 0.03636363636363636,
+            "recall": 0.04081632653061224,
+            "f1-score": 0.038461538461538464,
+            "support": 49.0
+        },
+        "sushi": {
+            "precision": 0.60,
+            "recall": 0.07,
+            "f1-score": 0.60,
+            "support": 60.0
+        },
+        "accuracy": 0.032357473035439135,
+        "macro avg": {
+            "precision": 0.029118248236452867,
+            "recall": 0.0317341850341374,
+            "f1-score": 0.029149362834970712,
+            "support": 1947.0
+        },
+        "weighted avg": {
+            "precision": 0.029878991599668694,
+            "recall": 0.032357473035439135,
+            "f1-score": 0.029820480829576442,
+            "support": 1947.0
+        }
+    }
+}
