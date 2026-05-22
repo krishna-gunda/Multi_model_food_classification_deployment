@@ -40,7 +40,7 @@ requests==2.33.1
 rich==15.0.0
 six==1.17.0
 starlette==1.0.0
-tensorflow==2.21.0
+tensorflow==2.15.0
 termcolor==3.3.0
 typing-inspection==0.4.2
 typing_extensions==4.15.0
